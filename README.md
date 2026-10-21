@@ -62,4 +62,4 @@ At 100× scale, full rebuilds and wide historical joins would be the first bottl
 
 ## AI assistance
 
-ChatGPT was used to help draft the initial Python/dbt implementation and README. Review, test, and adapt this code independently before submission; it has not been validated against the full runtime in the preparation environment.
+
