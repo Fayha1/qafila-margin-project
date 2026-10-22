@@ -44,10 +44,13 @@ SQLite/CSV → Python ingestion → DuckDB `raw` → dbt staging → dbt silver/
 |---|---|---:|---|
 | Unknown SKU | Supplier prices | 3 | Quarantine as `unknown_sku` |
 | Zero, negative, or unparseable cost | Supplier prices | 4 | Quarantine as `invalid_cost` |
-| Decimal commas and Arabic digits | Supplier prices | Not separately measured | Normalize before cost parsing |
-| Column rename `unit_cost` → `cost_sar` | Supplier prices | Not separately measured | Standardize during ingestion |
+| Arabic/Persian digits in cost values | Supplier prices | 34 | Normalize digits before cost parsing |
+| Comma or Arabic decimal separators | Supplier prices | 160 | Normalize before cost parsing |
+| Column rename `unit_cost` → `cost_sar` | Supplier prices | 480 | Standardize during ingestion |
 
-On the tested dataset, `quality.price_quarantine` contained **7** rejected supplier price records: **3** unknown SKUs and **4** invalid costs. Counts for normalization cases were not independently measured.
+On the tested dataset, `quality.price_quarantine` contained **7** rejected supplier price records: **3** unknown SKUs and **4** invalid costs.
+
+The formatting and column-name counts were measured across five supplier CSV files, including the late correction file. These counts may overlap because a record can contain multiple formatting issues.
 
 ## Tests
 
@@ -66,7 +69,9 @@ On the tested dataset, `quality.price_quarantine` contained **7** rejected suppl
 
 ## Re-runs and the correction
 
-The pipeline was run repeatedly against the generated dataset. Before the correction, the three output tables retained the same row counts across runs; the dbt tests and assignment checker continued to pass. Matching row counts alone do not prove full content-level idempotency.
+The pipeline was run repeatedly against the generated dataset. Before the correction, the three output tables retained the same row counts across runs; the dbt tests and assignment checker continued to pass.
+
+**Idempotency verification:** The pipeline was rerun without regenerating or modifying the input data. SHA-256 hashes of the complete row contents were compared before and after execution for `silver.product_cost_history` (637 rows), `gold.weekly_margin` (165 rows), and `quality.price_quarantine` (7 rows). All three hashes matched exactly, confirming content-level idempotency for the tested dataset.
 
 A late supplier price correction was generated using `uv run python tools/make_data.py --add-correction`, which created `data/suppliers/prices_2026-W39_fix.csv`. The pipeline was then rerun and checked successfully.
 
@@ -89,4 +94,4 @@ At 100× scale, full rebuilds and wide historical joins would be the first bottl
 
 ## AI assistance
 
-ChatGPT was used to explain the assignment requirements, assist with documentation, and guide the testing and validation process. 
+ChatGPT was used to explain the assignment requirements,assist with documentation, and guide the testing and validation process.
