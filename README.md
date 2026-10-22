@@ -89,4 +89,4 @@ At 100× scale, full rebuilds and wide historical joins would be the first bottl
 
 ## AI assistance
 
-ChatGPT was used to explain the assignment requirements, generate a preliminary implementation draft, assist with documentation, and guide the testing and validation process. The implementation was executed and checked against the provided assignment tests, including reruns, late correction handling, and Iceberg snapshot comparison.
+ChatGPT was used to explain the assignment requirements, assist with documentation, and guide the testing and validation process. 
