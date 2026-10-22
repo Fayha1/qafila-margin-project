@@ -1,6 +1,6 @@
 # Qafila gross margin
 
-Submitted by: Fayha Almutairy 
+Submitted by: <your name> — academy: @SDAIAAcademy
 
 See [BRIEF.md](BRIEF.md) for the assignment and contract.
 
